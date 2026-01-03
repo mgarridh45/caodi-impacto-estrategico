@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CAODI - Dashboard Estratégico (Responsive)</title>
+    <title>CAODI - Dashboard Estratégico (V2)</title>
     <style>
         :root {
             /* PALETA INSTITUCIONAL (Command Center Dark) */
@@ -263,7 +263,7 @@
         .z-name { font-weight: 600; font-size: 0.9rem; }
         .z-status { font-size: 0.8rem; text-align: right;}
 
-        /* --- 6. SCENARIOS --- */
+        /* --- 6. SCENARIOS (REESCRITO) --- */
         .scenarios-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -272,24 +272,56 @@
 
         .scenario-card {
             background: #0f1815;
-            padding: 15px;
+            padding: 20px;
             border-radius: 6px;
             border: 1px solid #2c3e50;
+            position: relative;
         }
+        /* Solo el actual tiene borde activo y fondo sutil */
         .scenario-card.active {
             border: 1px solid var(--risk-med);
             background: rgba(243, 156, 18, 0.05);
         }
+        
+        /* Badge flotante para escenario actual */
+        .scenario-card.active::after {
+            content: '● EN CURSO';
+            position: absolute;
+            top: 15px; right: 15px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--risk-med);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
 
         .sc-label {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             color: var(--text-muted);
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             letter-spacing: 1px;
+            font-weight: 700;
+            display: block;
         }
-        .sc-title { font-size: 1rem; font-weight: 700; margin-bottom: 5px; }
-        .sc-desc { font-size: 0.85rem; color: var(--text-sec); }
+        
+        .sc-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+        
+        .sc-desc { 
+            font-size: 0.9rem; 
+            color: var(--text-main); 
+            line-height: 1.5;
+        }
+        
+        .sc-desc strong {
+            color: white;
+            font-weight: 600;
+        }
 
         /* Utility Colors */
         .c-green { color: var(--risk-low); }
@@ -317,10 +349,7 @@
             font-weight: 600;
         }
 
-        /* =========================================
-           RESPONSIVE MEDIA QUERIES
-           ========================================= */
-        
+        /* RESPONSIVE */
         @media (max-width: 1024px) {
             .hero-message { font-size: 1.5rem; }
             .split-section { grid-template-columns: 1fr; }
@@ -456,29 +485,36 @@
             </div>
         </section>
 
-        <!-- SCENARIOS -->
+        <!-- SCENARIOS (ACTUALIZADO PARA CLARIDAD SEMÁNTICA) -->
         <section class="scenarios-grid">
+            
+            <!-- 1. ESCENARIO ACTUAL -->
             <div class="scenario-card active">
-                <div class="sc-label">ESCENARIO ACTUAL</div>
+                <span class="sc-label">ESCENARIO ACTUAL</span>
                 <div class="sc-title c-amber">VIGILANCIA / DISPERSIÓN</div>
                 <div class="sc-desc">
-                    Contención en focos principales con riesgo de desplazamiento.
+                    <strong>Situación actual:</strong> contención en focos principales, con riesgo de desplazamiento localizado hacia zonas de menor control.
                 </div>
             </div>
+
+            <!-- 2. ESCENARIO PROBABLE -->
             <div class="scenario-card">
-                <div class="sc-label">ESCENARIO PROBABLE</div>
+                <span class="sc-label">ESCENARIO PROBABLE</span>
                 <div class="sc-title c-green">ESTABILIZACIÓN</div>
                 <div class="sc-desc">
-                    Consolidación de la baja delictual en zonas intervenidas.
+                    <strong>Proyección:</strong> consolidación de la baja delictual en zonas intervenidas si se mantiene el control y la vigilancia focalizada.
                 </div>
             </div>
+
+            <!-- 3. ESCENARIO DE RIESGO -->
             <div class="scenario-card">
-                <div class="sc-label">ESCENARIO DE RIESGO</div>
+                <span class="sc-label">ESCENARIO DE RIESGO</span>
                 <div class="sc-title c-red">ADAPTACIÓN</div>
                 <div class="sc-desc">
-                    Resurgimiento de actividad por cambio de modus operandi.
+                    <strong>Riesgo:</strong> reaparición de actividad por cambio de modus operandi y reconfiguración de actores secundarios.
                 </div>
             </div>
+
         </section>
 
         <!-- FOOTER -->
@@ -487,8 +523,7 @@
             <p style="margin-top:5px;">
                 Información agregada con fines de análisis estratégico. No corresponde a sistemas operativos ni investigativos.
             </p>
-            <!-- CRÉDITO SOLICITADO -->
-            <p class="footer-credit">Realizado por Ingeniero - Marcelo Garrido</p>
+            <p class="footer-credit">Realizado por Ingeniero - Marcelo Garrido/ Caodi ZCS</p>
         </footer>
 
     </div>
