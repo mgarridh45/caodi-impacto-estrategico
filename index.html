@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAODI - Dashboard Estratégico Ejecutivo</title>
+    <style>
+        :root {
+            /* PALETA INSTITUCIONAL (Command Center Dark) */
+            --bg-body: #0a0f0d;       /* Negro verdoso profundo */
+            --bg-card: #141f1b;       /* Tarjeta oscura */
+            --brand-green: #006b3f;   /* Verde Carabineros Institucional */
+            --brand-dark: #004225;
+            
+            /* SEMÁNTICA DE RIESGO */
+            --risk-low: #27ae60;      /* Verde: Contención/Estabilidad */
+            --risk-med: #f39c12;      /* Ámbar: Vigilancia/Riesgo */
+            --risk-high: #c0392b;     /* Rojo: Alerta/Crítico */
+            
+            /* TEXTOS */
+            --text-main: #ecf0f1;
+            --text-sec: #95a5a6;
+            --text-muted: #5f6a6a;
+
+            /* FUENTE */
+            --font-stack: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            overflow-x: hidden;
+            font-size: 14px;
+        }
+
+        .dashboard-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* --- 1. HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--brand-dark);
+        }
+
+        .header-title h1 {
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .header-title h2 {
+            font-size: 0.9rem;
+            color: var(--text-sec);
+            font-weight: 400;
+            margin-top: 4px;
+        }
+
+        .period-select {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            padding: 6px 15px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--risk-low); /* Verde institucional */
+            font-weight: 600;
+        }
+
+        /* BARRA DE ENCUADRE INSTITUCIONAL */
+        .disclaimer-bar {
+            background: rgba(0, 107, 63, 0.15); /* Tintura verde */
+            border-left: 4px solid var(--brand-green);
+            padding: 10px 15px;
+            font-size: 0.8rem;
+            color: #a3e4d7;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 10px;
+        }
+
+        /* --- 2. BLOQUE CENTRAL (HERO) --- */
+        .hero-section {
+            background: var(--bg-card);
+            border-radius: 6px;
+            padding: 30px;
+            border-left: 8px solid var(--risk-med); /* Color cambia según estado */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--risk-med);
+            color: #000;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 2px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .hero-message {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .hero-recommendation {
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-left: 2px solid var(--text-sec);
+            margin-top: 20px;
+        }
+        .rec-label {
+            font-size: 0.75rem;
+            color: var(--risk-med); /* Ámbar para llamar atención */
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .rec-text {
+            font-size: 1rem;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        /* --- 3. KPIs GRID --- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 6px;
+            border-top: 3px solid transparent;
+        }
+
+        .kpi-label {
+            font-size: 0.8rem;
+            color: var(--text-sec);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .kpi-state {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kpi-desc {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            line-height: 1.4;
+            padding-top: 10px;
+            border-top: 1px solid #2c3e50;
+        }
+
+        /* Utility classes for colors */
+        .c-green { color: var(--risk-low); }
+        .c-amber { color: var(--risk-med); }
+        .c-red { color: var(--risk-high); }
+        .b-green { border-top-color: var(--risk-low); }
+        .b-amber { border-top-color: var(--risk-med); }
+        .b-red { border-top-color: var(--risk-high); }
+
+        /* --- 4 & 5. SPLIT SECTION (Chart & Map) --- */
+        .split-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .chart-container, .map-container {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            color: var(--text-sec);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+
+        /* Mockup Chart */
+        .chart-visual {
+            height: 140px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+        }
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+        .chart-marker {
+            position: absolute;
+            height: 100%;
+            width: 1px;
+            border-left: 1px dashed var(--text-sec);
+            left: 65%;
+            top: 0;
+        }
+        .marker-label {
+            position: absolute;
+            top: 10px;
+            left: 66%;
+            background: #333;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            border-radius: 3px;
+        }
+
+        /* Territory List */
+        .zone-list {
+            list-style: none;
+        }
+        .zone-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #2c3e50;
+        }
+        .zone-item:last-child { border-bottom: none; }
+        .z-name { font-weight: 600; font-size: 0.9rem; }
+        .z-status { font-size: 0.8rem; }
+
+        /* --- 6. SCENARIOS --- */
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .scenario-card {
+            background: #0f1815; /* Un poco más oscuro */
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #2c3e50;
+        }
+
+        .scenario-card.active {
+            border: 1px solid var(--risk-med);
+            background: rgba(243, 156, 18, 0.05);
+        }
+
+        .sc-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        .sc-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .sc-desc {
+            font-size: 0.85rem;
+            color: var(--text-sec);
+        }
+
+        /* --- 7. FOOTER --- */
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            border-top: 1px solid #2c3e50;
+            padding-top: 20px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <!-- 1. HEADER -->
+        <header>
+            <div class="header-title">
+                <h1>Dashboard Ejecutivo de Impacto Estratégico</h1>
+                <h2>Análisis Agregado para Toma de Decisiones – CAODI</h2>
+            </div>
+            <div class="period-select">
+                PERÍODO: ÚLTIMOS 12 MESES ▼
+            </div>
+        </header>
+
+        <!-- ENCUADRE OBLIGATORIO -->
+        <div class="disclaimer-bar">
+            <strong>ENCUADRE:</strong> Evaluación de impactos indirectos y riesgos internos derivados de contingencias externas. 
+            No corresponde a análisis político, militar ni a evaluación directa del escenario externo.
+        </div>
+
+        <!-- 2. BLOQUE CENTRAL (ESTADO) -->
+        <section class="hero-section">
+            <div class="hero-badge">NIVEL DE VIGILANCIA: MEDIA</div>
+            <div class="hero-message">
+                CONTENCIÓN PARCIAL CON RIESGO DE DESPLAZAMIENTO TERRITORIAL
+            </div>
+            <div style="color: var(--text-sec);">
+                Los indicadores principales muestran estabilidad, pero se observa migración de la actividad hacia zonas periféricas no intervenidas.
+            </div>
+
+            <div class="hero-recommendation">
+                <span class="rec-label">RECOMENDACIÓN ESTRATÉGICA</span>
+                <div class="rec-text">
+                    Mantener vigilancia reforzada en rutas secundarias de la Macrozona para evitar consolidación del desplazamiento.
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. INDICADORES CLAVE (KPIs) -->
+        <section class="kpi-grid">
+            <!-- KPI 1 -->
+            <div class="kpi-card b-green">
+                <div class="kpi-label">Tendencia Delictual General</div>
+                <div class="kpi-state c-green">
+                    <span>↓</span> A LA BAJA
+                </div>
+                <div class="kpi-desc">
+                    Reducción sostenida de eventos de mayor connotación tras intervención.
+                </div>
+            </div>
+            <!-- KPI 2 -->
+            <div class="kpi-card b-red">
+                <div class="kpi-label">Presión Territorial</div>
+                <div class="kpi-state c-red">
+                    <span>↑</span> EN AUMENTO
+                </div>
+                <div class="kpi-desc">
+                    Desplazamiento activo de ilícitos hacia sectores rurales adyacentes.
+                </div>
+            </div>
+            <!-- KPI 3 -->
+            <div class="kpi-card b-amber">
+                <div class="kpi-label">Capacidad Criminal Residual</div>
+                <div class="kpi-state c-amber">
+                    <span>→</span> ESTABLE
+                </div>
+                <div class="kpi-desc">
+                    Persisten estructuras de apoyo logístico con capacidad de recomposición.
+                </div>
+            </div>
+        </section>
+
+        <!-- 4 & 5. GRÁFICO Y TERRITORIO -->
+        <section class="split-section">
+            
+            <!-- Bloque Evolución -->
+            <div class="chart-container">
+                <div class="section-title">Evolución del Impacto (Tendencia)</div>
+                <div class="chart-visual">
+                    <div class="chart-marker"></div>
+                    <div class="marker-label">HITO OPERATIVO</div>
+                    <!-- SVG Simple Mockup -->
+                    <svg class="chart-svg" viewBox="0 0 400 100" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:var(--risk-low);stop-opacity:0.3" />
+                                <stop offset="100%" style="stop-color:var(--bg-card);stop-opacity:0" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M0,80 Q100,20 200,60 T400,75" stroke="var(--risk-low)" stroke-width="3" fill="none"/>
+                        <path d="M0,80 Q100,20 200,60 T400,75 V100 H0 Z" fill="url(#grad1)" stroke="none"/>
+                    </svg>
+                </div>
+                <p style="font-size:0.9rem; margin-top:10px; color:var(--text-sec);">
+                    Tras el hito operativo se observa contención inicial, con estabilización progresiva del impacto en niveles medios.
+                </p>
+            </div>
+
+            <!-- Bloque Territorial -->
+            <div class="map-container">
+                <div class="section-title">Focos de Interés Zonal</div>
+                <ul class="zone-list">
+                    <li class="zone-item">
+                        <span class="z-name">Zona Norte</span>
+                        <span class="z-status c-green">▼ Reducción Sostenida</span>
+                    </li>
+                    <li class="zone-item">
+                        <span class="z-name">Zona Centro</span>
+                        <span class="z-status c-amber">● Sin variación significativa</span>
+                    </li>
+                    <li class="zone-item">
+                        <span class="z-name">Zona Periférica</span>
+                        <span class="z-status c-red">▲ Incremento Relevante</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 6. ESCENARIOS ESTRATÉGICOS -->
+        <section class="scenarios-grid">
+            <div class="scenario-card active">
+                <div class="sc-label">ESCENARIO ACTUAL</div>
+                <div class="sc-title c-amber">VIGILANCIA / DISPERSIÓN</div>
+                <div class="sc-desc">
+                    Contención operativa en focos principales con riesgo de desplazamiento localizado a zonas de menor control.
+                </div>
+            </div>
+            <div class="scenario-card">
+                <div class="sc-label">ESCENARIO PROBABLE</div>
+                <div class="sc-title c-green">ESTABILIZACIÓN</div>
+                <div class="sc-desc">
+                    Consolidación de la baja delictual en zonas intervenidas y normalización en la periferia.
+                </div>
+            </div>
+            <div class="scenario-card">
+                <div class="sc-label">ESCENARIO DE RIESGO</div>
+                <div class="sc-title c-red">REBROTE / ADAPTACIÓN</div>
+                <div class="sc-desc">
+                    Adaptación del modus operandi y resurgimiento de actividad en sectores intervenidos.
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. FOOTER -->
+        <footer>
+            <p><strong>USO EXCLUSIVO OFICIAL - NIVEL RESERVADO</strong></p>
+            <p style="margin-top:5px;">
+                Información agregada con fines de análisis estratégico institucional. 
+                No corresponde a sistemas operativos, investigativos ni a evaluación directa de contingencias externas.
+            </p>
+        </footer>
+
+    </div>
+
+</body>
+</html>
